@@ -59,9 +59,6 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 	 * My test
 	 */
 		
-	offset = 0;
-	while (offset <= mmc){
-		
 		z = 0;
 		j = 0;
 		int menor[mmc];
@@ -69,7 +66,7 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 		while (z < mmc/pattern->v) {
 			for (i=0; i <= pattern->k; i++){
 				menor[(pattern->onSlots[i] + z*pattern->v) % mmc] = 1;
-				printf("menor %d-> %d\n",j, menor[j]);
+				//printf("menor %d-> %d\n",j, menor[j]);
 				j++;
 				};
 			z++;
@@ -81,21 +78,38 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 		memset(maior, 0, mmc*sizeof(int));
 		while (a < mmc/pattern->v) {
 			for (c=0; c < pattern2->k; c++){
-				maior[((pattern2->onSlots[c] + a*pattern2->v) % mmc) + offset%mmc] = 1;
-				printf("offset %d", offset);
-				//printf("maior %d-> %d\n",b, maior[b]);
+				maior[((pattern2->onSlots[c] + a*pattern2->v) % mmc)] = 1;				
+				printf("maior %d-> %d\n",b, maior[b]);
 				b++;
 				}
 			a++;
 		}
+		
+		
+		
+		int size = sizeof(maior)/sizeof(maior[0]); 
+		printf("size-> %d\n", size);
+		
+		for (int i=0; i < 4; i++){    //deveria ser i < size
+			int j, last;
+			last = maior[size -1];
+			for (j = size-1; j >0; j--){
+				maior[j] = maior[j-1];
+				}
+			maior[0] = last;
+			}
+			
+		for(int i=0; i <size ; i++){
+			printf("Offset %d-> %d\n", i, maior[i]);
+			}
+		
 
 		for (k=0; k < mmc; k++){
 			if ((menor[k] == 1) && (maior[k]==1)){
 				//printf("ACHOU em %d, menor %d, maior %d\n",k, menor[k], maior[k]);
 				}
 		}
-		offset++;
-	}
+
 
 
 	/*
@@ -139,6 +153,7 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 
 	return(pp);
 }
+
 
 uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned int offset ) {
 

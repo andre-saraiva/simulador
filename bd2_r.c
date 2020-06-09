@@ -37,7 +37,7 @@ typedef struct {
 t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 
 	t_pp_bd * pp;
-	int i, j, z, k, a, b, c, index, offset;
+	int i, j, z, w, a, b, c, d, e, index, offset;
 
 	/*
 	 * Allocate structures.
@@ -56,22 +56,24 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 
 
 	/*
-	 * My test
+	 * Creation of the MMC index for offset 0
 	 */
+	
+	// First pattern
 		
-		z = 0;
-		j = 0;
+		d = 0;
 		int menor[mmc];
 		memset(menor, 0, mmc*sizeof(int));
-		while (z < mmc/pattern->v) {
-			for (i=0; i <= pattern->k; i++){
-				menor[(pattern->onSlots[i] + z*pattern->v) % mmc] = 1;
-				//printf("menor %d-> %d\n",j, menor[j]);
-				j++;
+		while (d < mmc/pattern->v) {
+			for (e=0; e <= pattern->k; e++){
+				menor[(pattern->onSlots[e] + d*pattern->v) % mmc] = 1;
+				//printf("menor %d-> %d\n",e, menor[e]);
 				};
-			z++;
+			d++;
 		}
 
+	// Second pattern
+	
 		a = 0;
 		b = 0;
 		int maior[mmc];
@@ -79,18 +81,19 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 		while (a < mmc/pattern->v) {
 			for (c=0; c < pattern2->k; c++){
 				maior[((pattern2->onSlots[c] + a*pattern2->v) % mmc)] = 1;				
-				printf("maior %d-> %d\n",b, maior[b]);
+				//printf("maior %d-> %d\n",b, maior[b]);
 				b++;
 				}
 			a++;
 		}
 		
 		
+		/* Second pattern offset for different offset 0
 		
 		int size = sizeof(maior)/sizeof(maior[0]); 
 		printf("size-> %d\n", size);
 		
-		for (int i=0; i < 4; i++){    //deveria ser i < size
+		for (int i=0; i < 4; i++){    // i < size
 			int j, last;
 			last = maior[size -1];
 			for (j = size-1; j >0; j--){
@@ -101,20 +104,41 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 			
 		for(int i=0; i <size ; i++){
 			printf("Offset %d-> %d\n", i, maior[i]);
-			}
+			}*/
 		
 
-		for (k=0; k < mmc; k++){
-			if ((menor[k] == 1) && (maior[k]==1)){
-				//printf("ACHOU em %d, menor %d, maior %d\n",k, menor[k], maior[k]);
+	// Comparation of pattern of offset 0
+		w=0;
+		for (z=0; z < mmc; z++){
+			if ((menor[z] == 1) && (maior[z]==1)){
+				printf("ACHOU em %d, menor %d, maior %d\n",z, menor[z], maior[z]);
+				pp->offsetZero.coincidences[w] = z;
+				printf("W= %d\n",w);
+				printf("offsetZero.k = %d\n",pp->offsetZero.k);
+				printf("Valor em offsetZero.coincidences %d = %d\n",w,pp->offsetZero.coincidences[w]);
+				pp->offsetZero.k++;
+				w++;
+				int j = 0;		
+				for (i = 0; i < pp->offsetZero.k; i++) {
+
+					while(j <= pp->offsetZero.coincidences[i]) {
+
+						pp->offsetZero.index[j++] = i;
+					}
 				}
+
+				while(j < pp->v) {
+
+					pp->offsetZero.index[j++] = 0;
+				}
+			}
 		}
 
 
 
 	/*
 	 * Assemble first case.
-	 */
+	 
 
 	for (i = 0; i < pattern->k; i++) {
 
@@ -123,7 +147,7 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 	pp->offsetZero.v = pp->v;
 	pp->offsetZero.k = pp->k;
 
-	j = 0;
+	j = 0;		//criação do index para offset 0
 	for (i = 0; i < pp->offsetZero.k; i++) {
 
 		while(j <= pp->offsetZero.coincidences[i]) {
@@ -135,11 +159,11 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 	while(j < pp->v) {
 
 		pp->offsetZero.index[j++] = 0;
-	}
+	}*/
 
 	/*
 	 * Assemble second case.
-	 */
+	 
 
 	pp->others.coincidences[0] = 0;
 	pp->others.v = pp->v;
@@ -149,10 +173,10 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 	while(j < pp->v) {
 
 		pp->others.index[j++] = 0;
-	}
+	}*/
 
 	return(pp);
-}
+} 
 
 
 uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned int offset ) {

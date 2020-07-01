@@ -44,10 +44,12 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 	 */
 
 	pp = (t_pp_bd *) malloc(sizeof(t_pp_bd));
-	pp->offsetZero.coincidences = (int *) malloc(pattern->k * sizeof(int));
-	pp->offsetZero.index = (int *) malloc(pattern->v * sizeof(int));
+	pp->offsetZero.coincidences = (int *) malloc(pattern->k * pattern2->k * sizeof(int));
+	//pp->offsetZero.index = (int *) malloc(pattern->v * sizeof(int));
+	pp->offsetZero.index = (int *) malloc(mmc * sizeof(int));
 	pp->others.coincidences = (int *) malloc(sizeof(int));
-	pp->others.index = (int *) malloc(pattern->v * sizeof(int));
+	//pp->others.index = (int *) malloc(pattern->v * sizeof(int));
+	pp->others.index = (int *) malloc(mmc * sizeof(int));
 	pp->v = pattern->v;
 	pp->k = pattern->k;
 	pp->v = pattern2->v;
@@ -123,21 +125,22 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 		w=0;
 		for (z=0; z < mmc; z++){
 			if ((menor[z] == 1) && (maior[z]==1)){
-				//printf("ACHOU em %d, menor %d, maior %d\n",z, menor[z], maior[z]);
 				pp->offsetZero.coincidences[w] = z;				
 				pp->offsetZero.k++;
-				printf("offsetZero.coincidences %d = %d\n",w,pp->offsetZero.coincidences[w]);
 				w++;
 			}
 		}
 		
+		for (int p=0; p<pp->offsetZero.k; p++){
+			printf("offsetZero.coincidences %d= %d\n",p,pp->offsetZero.coincidences[p]);
+		}
+	printf("\n");
+		
 		j = 0;	
-		//pp->offsetZero.v = pp->v;	
-		printf("pp->offsetZero.v = %d\n",pp->offsetZero.v);
+		pp->offsetZero.v = pp->v;
 		for (i = 0; i < pp->offsetZero.k; i++) {
-			printf("opp->offsetZero.k = %d\n",pp->offsetZero.k);
 			while(j <= pp->offsetZero.coincidences[i]) {
-				pp->offsetZero.index[j++] = pp->offsetZero.coincidences[i]; //i;
+				pp->offsetZero.index[j++] = pp->offsetZero.coincidences[i];
 			}
 		}
 		
@@ -147,7 +150,6 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 
 		for (int p=0; p<mmc; p++){
 			printf("offsetZero.index %d = %d\n",p,pp->offsetZero.index[p]);
-			//printf("menor %d = %d\n", p, menor[p]);
 		}
 			printf("\n");
 		

@@ -6,10 +6,10 @@ pattern.v = 3
 patter.k = 2
 pattern.onslot=0,1
 
-indíce       012345601234560123456
+
 	     0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20	
 primeiro     1 1 0 1 1 0 1 1 0 1  1  0  1  1  0  1  1  0  1  1  0    onslot[0 1]
-segundo	     1 1 0 1 0 0 0 1 1 0  1  0  0  0  1  1  0  1  0  0  0    onslot[0,1,3]
+segundo     1 1 0 1 0 0 0 1 1 0  1  0  0  0  1  1  0  1  0  0  0    onslot[0,1,3]
 
 saida
 0,0

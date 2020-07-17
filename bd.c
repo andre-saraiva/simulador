@@ -7,6 +7,8 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
+
+
 const gsl_rng_type * T;
 gsl_rng * r;
 
@@ -37,7 +39,7 @@ typedef struct {
 t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 
 	t_pp_bd * pp;
-	int i, j, z, w, a, b, c, d, e, f, h, index, offset;
+	int i, j, z, w, a, b, c, d, e, f, h, k, t, index, offset;
 
 	/*
 	 * Allocate structures.
@@ -47,9 +49,18 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 	pp->offsetZero.coincidences = (int *) malloc(pattern->k * pattern2->k * sizeof(int));
 	//pp->offsetZero.index = (int *) malloc(pattern->v * sizeof(int));
 	pp->offsetZero.index = (int *) malloc(mmc * sizeof(int));
-	pp->others.coincidences = (int *) malloc(sizeof(int));
+	//pp->others.coincidences = (int *) malloc(sizeof(int));
+	pp->others.coincidences = (int *) malloc(pattern->k * pattern2->k * sizeof(int));
 	//pp->others.index = (int *) malloc(pattern->v * sizeof(int));
 	pp->others.index = (int *) malloc(mmc * sizeof(int));
+	/*for (int q=0; q<mmc; q++){
+		char n[3];
+		char str[20] = "others.index";
+		sprintf(n, "%d", q);
+		strcat(str, n);
+		printf("%s",str);
+		pp->str = (int *) malloc(mmc * sizeof(int));
+		}*/
 	pp->v = pattern->v;
 	pp->k = pattern->k;
 	pp->v = pattern2->v;
@@ -78,7 +89,6 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 
 	for (int p=0; p<mmc; p++){
 		printf("%d",menor[p]);
-		//printf("menor %d = %d\n", p, menor[p]);
 		}
 	printf("\n");
 
@@ -98,27 +108,9 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 		
 	for (int p=0; p<mmc; p++){
 		printf("%d",maior[p]);
-		//printf("maior %d = %d\n", p, maior[p]);
 		}
 		printf("\n");
 		
-		/* Second pattern offset for different offset 0
-		
-		int size = sizeof(maior)/sizeof(maior[0]); 
-		printf("size-> %d\n", size);
-		
-		for (int i=0; i < 4; i++){    // i < size
-			int j, last;
-			last = maior[size -1];
-			for (j = size-1; j >0; j--){
-				maior[j] = maior[j-1];
-				}
-			maior[0] = last;
-			}
-			
-		for(int i=0; i <size ; i++){
-			printf("Offset %d-> %d\n", i, maior[i]);
-			}*/
 		
 
 	// Comparation of pattern of offset 0
@@ -152,6 +144,76 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 			printf("offsetZero.index %d = %d\n",p,pp->offsetZero.index[p]);
 		}
 			printf("\n");
+			
+			
+
+		// Second pattern offset for different offset 0
+		
+		int size = sizeof(maior)/sizeof(maior[0]); 
+		printf("size-> %d\n", size);
+		w=0;
+		for (int i=1; i < 4; i++){    // i < size
+			int j, last;
+			last = maior[size -1];
+			for (j = size-1; j >0; j--){
+				maior[j] = maior[j-1];
+				}
+			maior[0] = last;
+			}
+			
+			
+		for (int p=0; p<mmc; p++){
+			printf("%d",menor[p]);
+		}
+		printf("\n");
+	
+		for (int p=0; p<mmc; p++){
+			printf("%d",maior[p]);
+		}
+		printf("\n");
+			
+		k=0;
+		for (t=0; t < mmc; t++){
+			if ((menor[t] == 1) && (maior[t]==1)){
+				pp->others.coincidences[k] = t;				
+				pp->others.k++;
+				k++;
+			}
+		}
+			
+		for (int p=0; p<pp->others.k; p++){
+			printf("others.coincidences %d= %d\n",p,pp->others.coincidences[p]);
+		}
+	printf("\n");
+	
+		j = 0;	
+		pp->others.v = pp->v;
+		for (i = 0; i < pp->others.k; i++) {
+			while(j <= pp->others.coincidences[i]) {
+				pp->others.index[j++] = pp->others.coincidences[i];
+				printf("pp->others.coincidences[pp->others.k-1] = %d e j = %d\n", pp->others.coincidences[pp->others.k-1],j);
+				if (j > pp->others.coincidences[pp->others.k-1]){
+					printf("pp->others.index[j++] = %d ", pp->others.index[j]);
+					printf("pp->others.coincidences[0] = %d\n", pp->others.coincidences[0]);
+					pp->others.index[j++] = pp->others.coincidences[0];
+					}
+			}
+		}
+		
+		while(j < pp->v) {
+			pp->others.index[j++] = 0;
+		}
+
+		for (int p=0; p<mmc; p++){
+			printf("others.index %d = %d\n",p,pp->others.index[p]);
+		}
+			printf("\n");
+			
+			
+			
+			
+			
+			
 		
 	/*
 	 * Assemble first case.
@@ -216,7 +278,7 @@ uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned 
 /*
 	if (offset == 0) {
 //	printf("case 1\n");
-		pp_intersection = & (pp->offsetZero);
+		pp_intersection = & (pp->offsetZero); //aqui muda para a posição do pré processamento, tirar o if
 	}
 	else {
 //	printf("case 2\n");
@@ -355,4 +417,3 @@ int main(int argc, char ** argv) {
 
 	return(0);
 }
-

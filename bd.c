@@ -39,7 +39,7 @@ typedef struct {
 t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 
 	t_pp_bd * pp;
-	int i, j, z, w, a, b, c, d, e, f, h, k, t, index, offset;
+	int i, j, z, w, a, b, c, d, e, f, h, k, t, q, u, r, y, last, index, offset;
 
 	/*
 	 * Allocate structures.
@@ -87,10 +87,10 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 		}
 
 
-	for (int p=0; p<mmc; p++){
+	/*for (int p=0; p<mmc; p++){
 		printf("%d",menor[p]);
 		}
-	printf("\n");
+	printf("\n");*/
 
 	// Second pattern
 	
@@ -106,10 +106,10 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 			d++;
 		}
 		
-	for (int p=0; p<mmc; p++){
+	/*for (int p=0; p<mmc; p++){
 		printf("%d",maior[p]);
 		}
-		printf("\n");
+		printf("\n");*/
 		
 		
 
@@ -123,10 +123,10 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 			}
 		}
 		
-		for (int p=0; p<pp->offsetZero.k; p++){
+		/*for (int p=0; p<pp->offsetZero.k; p++){
 			printf("offsetZero.coincidences %d= %d\n",p,pp->offsetZero.coincidences[p]);
 		}
-	printf("\n");
+		printf("\n");*/
 		
 		j = 0;	
 		pp->offsetZero.v = pp->v;
@@ -140,10 +140,10 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 			pp->offsetZero.index[j++] = 0;
 		}
 
-		for (int p=0; p<mmc; p++){
+		/*for (int p=0; p<mmc; p++){
 			printf("offsetZero.index %d = %d\n",p,pp->offsetZero.index[p]);
 		}
-			printf("\n");
+			printf("\n");*/
 			
 			
 
@@ -151,12 +151,12 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 		
 		int size = sizeof(maior)/sizeof(maior[0]); 
 		printf("size-> %d\n", size);
-		w=0;
-		for (int i=1; i < 4; i++){    // i < size
-			int j, last;
+		//w=0;
+		for (int q=1; q < 4; q++){    // i < size
+			//int j, last;
 			last = maior[size -1];
-			for (j = size-1; j >0; j--){
-				maior[j] = maior[j-1];
+			for (r = size-1; r >0; r--){
+				maior[r] = maior[r-1];
 				}
 			maior[0] = last;
 			}
@@ -186,22 +186,24 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 		}
 	printf("\n");
 	
-		j = 0;	
+		y = 0;	
 		pp->others.v = pp->v;
-		for (i = 0; i < pp->others.k; i++) {
-			while(j <= pp->others.coincidences[i]) {
-				pp->others.index[j++] = pp->others.coincidences[i];
-				printf("pp->others.coincidences[pp->others.k-1] = %d e j = %d\n", pp->others.coincidences[pp->others.k-1],j);
-				if (j > pp->others.coincidences[pp->others.k-1]){
-					printf("pp->others.index[j++] = %d ", pp->others.index[j]);
-					printf("pp->others.coincidences[0] = %d\n", pp->others.coincidences[0]);
-					pp->others.index[j++] = pp->others.coincidences[0];
+		for (u = 0; u <= pp->others.k; u++) {
+			while(y <= pp->others.coincidences[u]) {
+				pp->others.index[y++] = pp->others.coincidences[u];
+				printf("pp->others.index[y] = %d", pp->others.index[y]);
+				if (y > pp->others.coincidences[pp->others.k-1]){
+					//printf("pp->others.coincidences[pp->others.k-1] = %d e j = %d\n", pp->others.coincidences[pp->others.k-1],j);
+					//printf("pp->others.index[j++] = %d ", pp->others.index[j]);
+					//printf("pp->others.coincidences[0] = %d\n", pp->others.coincidences[0]);
+					pp->others.index[y++] = pp->others.coincidences[0];
+					printf("pp->others.index[y] = %d ", pp->others.index[y]);
 					}
 			}
 		}
 		
-		while(j < pp->v) {
-			pp->others.index[j++] = 0;
+		while(y < pp->v) {
+			pp->others.index[y++] = 0;
 		}
 
 		for (int p=0; p<mmc; p++){

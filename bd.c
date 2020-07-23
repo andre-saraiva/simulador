@@ -36,10 +36,10 @@ typedef struct {
 	t_pp_intersection others;
 } t_pp_bd;
 
-t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
+t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc, unsigned int offset) {
 
 	t_pp_bd * pp;
-	int i, j, z, w, a, b, c, d, e, f, h, k, t, q, u, r, y, last, index, offset;
+	int i, j, z, w, a, b, c, d, e, f, h, k, t, q, u, r, y, x, last, index;
 
 	/*
 	 * Allocate structures.
@@ -66,7 +66,7 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 	pp->v = pattern2->v;
 	pp->k = pattern2->k;
 
-
+	printf("offset = %d", offset);
 
 	/*
 	 * Creation of the MMC index for offset 0
@@ -87,10 +87,10 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 		}
 
 
-	/*for (int p=0; p<mmc; p++){
+	for (int p=0; p<mmc; p++){
 		printf("%d",menor[p]);
 		}
-	printf("\n");*/
+	printf("\n");
 
 	// Second pattern
 	
@@ -106,10 +106,10 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 			d++;
 		}
 		
-	/*for (int p=0; p<mmc; p++){
+	for (int p=0; p<mmc; p++){
 		printf("%d",maior[p]);
 		}
-		printf("\n");*/
+		printf("\n");
 		
 		
 
@@ -123,10 +123,10 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 			}
 		}
 		
-		/*for (int p=0; p<pp->offsetZero.k; p++){
+		for (int p=0; p<pp->offsetZero.k; p++){
 			printf("offsetZero.coincidences %d= %d\n",p,pp->offsetZero.coincidences[p]);
 		}
-		printf("\n");*/
+		printf("\n");
 		
 		j = 0;	
 		pp->offsetZero.v = pp->v;
@@ -140,19 +140,18 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 			pp->offsetZero.index[j++] = 0;
 		}
 
-		/*for (int p=0; p<mmc; p++){
+		for (int p=0; p<mmc; p++){
 			printf("offsetZero.index %d = %d\n",p,pp->offsetZero.index[p]);
 		}
-			printf("\n");*/
+			printf("\n");
 			
 			
 
 		// Second pattern offset for different offset 0
-		
+		printf("offset = %d", offset);
 		int size = sizeof(maior)/sizeof(maior[0]); 
-		printf("size-> %d\n", size);
 		//w=0;
-		for (int q=1; q < 4; q++){    // i < size
+		for (int q=1; q < offset; q++){    // i < size
 			//int j, last;
 			last = maior[size -1];
 			for (r = size-1; r >0; r--){
@@ -188,19 +187,20 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 	
 		y = 0;	
 		pp->others.v = pp->v;
+		x = pp->others.coincidences[pp->others.k-1];
 		for (u = 0; u <= pp->others.k; u++) {
+			if (y > pp->others.coincidences[pp->others.k-1]) {
+				while (x < mmc-1){
+				pp->others.index[y++] = pp->others.coincidences[0];
+				x++;
+				}
+			} else {				
 			while(y <= pp->others.coincidences[u]) {
 				pp->others.index[y++] = pp->others.coincidences[u];
-				printf("pp->others.index[y] = %d", pp->others.index[y]);
-				if (y > pp->others.coincidences[pp->others.k-1]){
-					//printf("pp->others.coincidences[pp->others.k-1] = %d e j = %d\n", pp->others.coincidences[pp->others.k-1],j);
-					//printf("pp->others.index[j++] = %d ", pp->others.index[j]);
-					//printf("pp->others.coincidences[0] = %d\n", pp->others.coincidences[0]);
-					pp->others.index[y++] = pp->others.coincidences[0];
-					printf("pp->others.index[y] = %d ", pp->others.index[y]);
-					}
+				}
 			}
 		}
+		
 		
 		while(y < pp->v) {
 			pp->others.index[y++] = 0;
@@ -211,11 +211,7 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 		}
 			printf("\n");
 			
-			
-			
-			
-			
-			
+					
 		
 	/*
 	 * Assemble first case.
@@ -259,7 +255,7 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc) {
 	return(pp);
 } 
 
-/*
+
 uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned int offset ) {
 
 	uint64_t t;
@@ -277,7 +273,7 @@ uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned 
 	/*
 	 * Test in which of the four cases the offset falls.
 	 */
-/*
+
 	if (offset == 0) {
 //	printf("case 1\n");
 		pp_intersection = & (pp->offsetZero); //aqui muda para a posição do pré processamento, tirar o if
@@ -291,7 +287,7 @@ uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned 
 	 * Account for the number of slots until
 	 * the first opportunity.
 	 */
-/*
+
 	if (pp_intersection->coincidences[pp_intersection->index[start]] >= start)
 		t = pp_intersection->coincidences[pp_intersection->index[start]] - start;
 	else 
@@ -301,7 +297,7 @@ uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned 
 	/*
 	 * Account for the number of cycles.
 	 */
-/*
+
 	t += (attempts / pp_intersection->k) * pp->v;
 	attempts = (attempts % pp_intersection->k);
 
@@ -309,7 +305,7 @@ uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned 
 	/*
 	 * Account for the remainder of the attempts.
 	 */
-/*
+
 	i = pp_intersection->index[start];
 	while(attempts--) {
 		next_i = (i + 1) % pp_intersection->k;
@@ -328,7 +324,7 @@ uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned 
 
 	return(t);
 }
-*/
+
 int main(int argc, char ** argv) {
 
 	t_bd pattern;
@@ -388,7 +384,8 @@ int main(int argc, char ** argv) {
 	}
 
 
-	pp = genPP(& pattern, & pattern2, mmc);
+	//pp = genPP(& pattern, & pattern2, mmc, offset);
+	//printf("offset = %d\n", offset);
 
 	p = start_p;
 	for (j = 0; j < n_p; j++) {
@@ -400,18 +397,22 @@ int main(int argc, char ** argv) {
 			t_total = 0;
 			for (k = 0; k < hops; k++) {
 				offset = floor(gsl_ran_flat(r, 0.0, (double) pp->v)); //PARA OFFSET RANDOM
+				
 				//offset = pp-> v -1; PARA OFFSET 1 NO BD E offset = v-1; NOS DEMAIS
-			//	t = simulateEncounter(pp, p, start, offset);
+				//t = simulateEncounter(pp, p, start, offset);
 				t_total += t;
 				start = (start + offset + t + 1) % pp->v;
 				fprintf(output, "%u\t", t);
 			}
+			printf("offset = %d\n", offset);
 			fprintf(output, "%lu\n", t_total);
 		}
 		p += by_p;
 		if (p > 1.0) p = 1.0;
 		fclose(output);
 	}
+	pp = genPP(& pattern, & pattern2, mmc, offset);
+	printf("offset = %d\n", offset);
 
 	free(pattern.onSlots);
 	free(pattern2.onSlots);

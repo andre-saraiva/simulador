@@ -47,26 +47,13 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc, unsigned int offset) {
 
 	pp = (t_pp_bd *) malloc(sizeof(t_pp_bd));
 	pp->offsetZero.coincidences = (int *) malloc(pattern->k * pattern2->k * sizeof(int));
-	//pp->offsetZero.index = (int *) malloc(pattern->v * sizeof(int));
 	pp->offsetZero.index = (int *) malloc(mmc * sizeof(int));
-	//pp->others.coincidences = (int *) malloc(sizeof(int));
 	pp->others.coincidences = (int *) malloc(pattern->k * pattern2->k * sizeof(int));
-	//pp->others.index = (int *) malloc(pattern->v * sizeof(int));
 	pp->others.index = (int *) malloc(mmc * sizeof(int));
-	/*for (int q=0; q<mmc; q++){
-		char n[3];
-		char str[20] = "others.index";
-		sprintf(n, "%d", q);
-		strcat(str, n);
-		printf("%s",str);
-		pp->str = (int *) malloc(mmc * sizeof(int));
-		}*/
 	pp->v = pattern->v;
 	pp->k = pattern->k;
 	pp->v = pattern2->v;
 	pp->k = pattern2->k;
-
-	printf("offset = %d", offset);
 
 	/*
 	 * Creation of the MMC index for offset 0
@@ -148,7 +135,6 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc, unsigned int offset) {
 			
 
 		// Second pattern offset for different offset 0
-		printf("offset = %d", offset);
 		int size = sizeof(maior)/sizeof(maior[0]); 
 		//w=0;
 		for (int q=1; q < offset; q++){    // i < size
@@ -210,47 +196,7 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc, unsigned int offset) {
 			printf("others.index %d = %d\n",p,pp->others.index[p]);
 		}
 			printf("\n");
-			
-					
-		
-	/*
-	 * Assemble first case.
-	 
-
-	for (i = 0; i < pattern->k; i++) {
-
-		pp->offsetZero.coincidences[i] = pattern->onSlots[i];
-	}
-	pp->offsetZero.v = pp->v;
-	pp->offsetZero.k = pp->k;
-
-	j = 0;		//criação do index para offset 0
-	for (i = 0; i < pp->offsetZero.k; i++) {
-
-		while(j <= pp->offsetZero.coincidences[i]) {
-
-			pp->offsetZero.index[j++] = i;
-		}
-	}
-
-	while(j < pp->v) {
-
-		pp->offsetZero.index[j++] = 0;
-	}*/
-
-	/*
-	 * Assemble second case.
-	 
-
-	pp->others.coincidences[0] = 0;
-	pp->others.v = pp->v;
-	pp->others.k = 1;
-
-	j = 0;
-	while(j < pp->v) {
-
-		pp->others.index[j++] = 0;
-	}*/
+							
 
 	return(pp);
 } 
@@ -385,7 +331,6 @@ int main(int argc, char ** argv) {
 
 
 	//pp = genPP(& pattern, & pattern2, mmc, offset);
-	//printf("offset = %d\n", offset);
 
 	p = start_p;
 	for (j = 0; j < n_p; j++) {
@@ -393,16 +338,18 @@ int main(int argc, char ** argv) {
 		sprintf(filename, "%sbd_%.6f.txt", outputdir, p);
 		output = fopen(filename, "w");
 		for (i = 0; i < reps; i++) {
-			start = floor(gsl_ran_flat(r, 0.0, (double) pp->v));
+			start = floor(gsl_ran_flat(r, 0.0, (double) mmc));
 			t_total = 0;
 			for (k = 0; k < hops; k++) {
-				offset = floor(gsl_ran_flat(r, 0.0, (double) pp->v)); //PARA OFFSET RANDOM
+				offset = floor(gsl_ran_flat(r, 0.0, (double) mmc)); //PARA OFFSET RANDOM
+				pp = genPP(& pattern, & pattern2, mmc, offset);
 				
 				//offset = pp-> v -1; PARA OFFSET 1 NO BD E offset = v-1; NOS DEMAIS
-				//t = simulateEncounter(pp, p, start, offset);
+				t = simulateEncounter(pp, p, start, offset);
 				t_total += t;
 				start = (start + offset + t + 1) % pp->v;
 				fprintf(output, "%u\t", t);
+				free(pp);
 			}
 			printf("offset = %d\n", offset);
 			fprintf(output, "%lu\n", t_total);
@@ -411,8 +358,7 @@ int main(int argc, char ** argv) {
 		if (p > 1.0) p = 1.0;
 		fclose(output);
 	}
-	pp = genPP(& pattern, & pattern2, mmc, offset);
-	printf("offset = %d\n", offset);
+
 
 	free(pattern.onSlots);
 	free(pattern2.onSlots);

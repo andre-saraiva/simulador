@@ -36,7 +36,7 @@ typedef struct {
 	t_pp_intersection others;
 } t_pp_bd;
 
-t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc, unsigned int offset) {
+t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int offset) {
 
 	t_pp_bd * pp;
 	int i, j, z, w, a, b, c, d, e, f, h, k, t, q, u, r, y, x, last, index;
@@ -201,7 +201,7 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, int mmc, unsigned int offset) {
 } 
 
 
-uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned int offset ) {
+uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned int offset, unsigned int mmc ) {
 
 	uint64_t t;
 	unsigned int attempts;
@@ -234,7 +234,8 @@ uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned 
 	if (pp_intersection->coincidences[pp_intersection->index[start]] >= start){
 		t = pp_intersection->coincidences[pp_intersection->index[start]] - start;
 	} else {
-		t = pp_intersection->v - (start - pp_intersection->coincidences[pp_intersection->index[start]]);
+		//t = pp_intersection->v - (start - pp_intersection->coincidences[pp_intersection->index[start]]); //gdb aqui
+		t = mmc - (start - pp_intersection->coincidences[pp_intersection->index[start]]);
 	}
 	attempts--;
 	printf("t1 = %lu\n", t);
@@ -242,7 +243,8 @@ uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned 
 	 * Account for the number of cycles.
 	 */
 
-	t += (attempts / pp_intersection->k) * pp->v;
+	//t += (attempts / pp_intersection->k) * pp->v;
+	t += (attempts / pp_intersection->k) * mmc;
 	attempts = (attempts % pp_intersection->k);
 
 	printf("t2 = %lu\n", t);
@@ -336,15 +338,16 @@ int main(int argc, char ** argv) {
 		sprintf(filename, "%sbd_%.6f.txt", outputdir, p);
 		output = fopen(filename, "w");
 		for (i = 0; i < reps; i++) {
-			start = floor(gsl_ran_flat(r, 0.0, (double) mmc));
+			start = floor(gsl_ran_flat(r, 0.0, (double) mmc)); //fixar 
 			t_total = 0;
 			for (k = 0; k < hops; k++) {
 				offset = floor(gsl_ran_flat(r, 0.0, (double) mmc)); //PARA OFFSET RANDOM
 				//offset = pp-> v -1; PARA OFFSET 1 NO BD E offset = v-1; NOS DEMAIS
 				pp = genPP(& pattern, & pattern2, mmc, offset);
-				t = simulateEncounter(pp, p, start, offset);
+				t = simulateEncounter(pp, p, start, offset, mmc);
 				t_total += t;
-				start = (start + offset + t + 1) % pp->v;
+				//start = (start + offset + t + 1) % pp->v;
+				start = (start + offset + t + 1) % mmc;
 				fprintf(output, "%u\t", t);
 				//free(pp);
 			}

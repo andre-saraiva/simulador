@@ -50,19 +50,18 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 	pp->offsetZero.index = (int *) malloc(mmc * sizeof(int));
 	pp->others.coincidences = (int *) malloc(pattern->k * pattern2->k * sizeof(int));
 	pp->others.index = (int *) malloc(mmc * sizeof(int));
-	pp->v = mmc; //pattern->v;
-	pp->k = pattern->k * pattern2->k;
-	//pp->v = pattern2->v;
-	//pp->k = pattern2->k;
-	//printf("Offset: %d\n",offset);
+	pp->v = pattern->v;
+	pp->k = pattern->k;
+	pp->v = pattern2->v;
+	pp->k = pattern2->k;
+	printf("Offset: %d\n",offset);
 
 	/*
 	 * Creation of the MMC index for offset 0
 	 */
 	
 	// First pattern
-		
-		
+				
 		a = 0;
 		b = 0;
 		int menor[mmc];
@@ -74,11 +73,11 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 			a++;
 		}
 
-	/*	printf("Criação do padrão menor:\n");
+
 		for (int p=0; p<mmc; p++){
-			printf("%d",menor[p]);
+			printf("Criação do padrão menor: %d",menor[p]);
 			}
-		printf("\n"); */
+		printf("\n"); 
 
 	// Second pattern
 	
@@ -93,18 +92,15 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 				}
 			d++;
 		}
-	/*	printf("Criação do padrão maior:\n");
+		
 		for (int p=0; p<mmc; p++){
-			printf("%d",maior[p]);
+			printf("Criação do padrão maior: %d",maior[p]);
 			}
-		printf("\n"); */
-		
-		
-	/*
-	* Comparation of pattern of offset 0
-	*/
-	
-	if (offset == 0){	//aqui verifica se o offset sorteado é 0
+		printf("\n"); 
+			
+
+	// Comparation of pattern of offset 0
+	if (offset == 0){	
 		w=0;
 		contZero=0;
 		for (z=0; z < mmc; z++){
@@ -117,17 +113,16 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 			}
 		pp->offsetZero.k = contZero;
 	
-	/*	for (int p=0; p < contZero; p++){
+		for (int p=0; p < contZero; p++){
 			printf("offsetZero.coincidences for offset 0 - %d= %d\n",p,pp->offsetZero.coincidences[p]);
 			}
-		printf("\n");*/
+		printf("\n");
 		
 		j = 0;	
 		pp->offsetZero.v = pp->v;
 		for (i = 0; i < contZero; i++) {
 			while(j <= pp->offsetZero.coincidences[i]) {
-				//pp->offsetZero.index[j++] = pp->offsetZero.coincidences[i];
-				pp->offsetZero.index[j++] = i;
+				pp->offsetZero.index[j++] = pp->offsetZero.coincidences[i];
 				}
 			}
 		
@@ -135,16 +130,13 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 			pp->offsetZero.index[j++] = 0;
 			}
 
-	/*	for (int p=0; p<mmc; p++){
+		for (int p=0; p<mmc; p++){
 			printf("offsetZero.index for offset 0 - %d = %d\n",p,pp->offsetZero.index[p]);
 			}
-			printf("\n");*/
+			printf("\n");
 	
 	} else {
-		/*
-		* Second pattern offset for different offset 0
-		*/
-		
+		// Second pattern offset for different offset 0
 		int size = sizeof(maior)/sizeof(maior[0]); 
 		for (int q=0; q < offset; q++){    
 			last = maior[size -1];
@@ -153,18 +145,16 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 				}
 			maior[0] = last;
 			}
-	//	printf("Offset sorteado: %d\n",offset);
-	
-	/*	printf("Padrão menor:\n");
+				
 		for (int p=0; p<mmc; p++){
-			printf("%d", menor[p]);
+			printf("Padrao menor para offset %d : %d",offset, menor[p]);
 			}
 		printf("\n");
-		printf("Padrão maior:\n");
+	
 		for (int p=0; p<mmc; p++){
-			printf("%d", maior[p]);
+			printf("Padrao maior para offset %d: %d",offset, maior[p]);
 			}
-		printf("\n");*/
+		printf("\n");
 			
 		s=0;
 		contOther=0;
@@ -178,10 +168,10 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 			}
 			pp->others.k = contOther;
 	
-	/*	for (int p=0; p<contOther; p++){
-			printf("others.coincidences %d for offset %d = %d\n", p, offset,pp->others.coincidences[p]);
+		for (int p=0; p<contOther; p++){
+			printf("others.coincidences for offset %d - %d= %d\n", offset,p,pp->others.coincidences[p]);
 			}
-		printf("\n");*/
+		printf("\n");
 	
 		y = 0;	
 		pp->others.v = pp->v;
@@ -189,14 +179,12 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 		for (u = 0; u <= contOther; u++) {
 			if (y > pp->others.coincidences[contOther-1]) {
 				while (x < mmc-1){
-				//pp->others.index[y++] = pp->others.coincidences[0];
-				pp->others.index[y++] = 0;
+				pp->others.index[y++] = pp->others.coincidences[0];
 				x++;
 					}
 			} else {				
 				while(y <= pp->others.coincidences[u]) {
-				//pp->others.index[y++] = pp->others.coincidences[u];
-				pp->others.index[y++] = u;
+				pp->others.index[y++] = pp->others.coincidences[u];
 				}
 			}
 		}
@@ -205,8 +193,8 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 			pp->others.index[y++] = 0;
 			}
 
-	/*	for (int p=0; p<mmc; p++){
-			printf("others.index %d for offset %d = %d\n", p, offset,pp->others.index[p]);
+		for (int p=0; p<mmc; p++){
+			printf("others.index for offset %d - %d = %d\n", offset,p,pp->others.index[p]);
 			}
 			printf("\n");*/
 		};		
@@ -228,7 +216,7 @@ uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned 
 //	offset = floor(gsl_ran_flat(r, 0.0, (double) pp->v));
 //	start = floor(gsl_ran_flat(r, 0.0, (double) pp->v));
 //	attempts = 2; offset = 47; start = 44;
-//	printf("attempts = %u, start = %u, offset = %u\n", attempts, start, offset);
+	printf("attempts = %u, start = %u, offset = %u\n", attempts, start, offset);
 	
 	/*
 	 * Test in which of the four cases the offset falls.
@@ -249,45 +237,41 @@ uint64_t simulateEncounter(t_pp_bd * pp, double p, unsigned int start, unsigned 
 
 	if (pp_intersection->coincidences[pp_intersection->index[start]] >= start){
 		t = pp_intersection->coincidences[pp_intersection->index[start]] - start;
-	//	printf("t if 1 = %lu\n", t);
 	} else {
-		t = pp_intersection->v - (start - pp_intersection->coincidences[pp_intersection->index[start]]); //gdb aqui
-		//t = mmc - (start - pp_intersection->coincidences[pp_intersection->index[start]]);
-	//	printf("t else 1 = %lu\n", t);
+		//t = pp_intersection->v - (start - pp_intersection->coincidences[pp_intersection->index[start]]);
+		t = mmc - (start - pp_intersection->coincidences[pp_intersection->index[start]]);
 	}
 	attempts--;
-//	printf("t out if1 = %lu\n", t);
-	
+	//printf("t1 = %lu\n", t);
 	/*
 	 * Account for the number of cycles.
 	 */
 
-	t += (attempts / pp_intersection->k) * pp->v;
-	//t += (attempts / pp_intersection->k) * mmc;
+	//t += (attempts / pp_intersection->k) * pp->v;
+	t += (attempts / pp_intersection->k) * mmc;
 	attempts = (attempts % pp_intersection->k);
 
-//	printf("t2 = %lu\n", t);
-	
+	//printf("t2 = %lu\n", t);
 	/*
 	 * Account for the remainder of the attempts.
 	 */
-	 
+
 	i = pp_intersection->index[start];
 	while(attempts--) {
 		next_i = (i + 1) % pp_intersection->k;
-	//	printf("attempts = %u, i = %d, next_i = %d\n", attempts, i, next_i);
+//		printf("attempts = %u, i = %d, next_i = %d\n", attempts, i, next_i);
 		if (next_i > i) {
 
 			t += (pp_intersection->coincidences[next_i] - pp_intersection->coincidences[i]);
-		//	printf("t3 = %lu\n", t);
+			//printf("t3 = %lu\n", t);
 		}
 		else {
 
 			t += (mmc - (pp_intersection->coincidences[i] - pp_intersection->coincidences[next_i]));
-		//	printf("t4 = %lu\n", t);
+			//printf("t4 = %lu\n", t);
 		}
 		i = next_i;
-	//	printf("tn = %lu\n", t);
+//		printf("tn = %lu\n", t);
 	}
 
 	return(t);
@@ -300,7 +284,7 @@ int main(int argc, char ** argv) {
 	t_pp_bd * pp;
 	char * s_pattern;
 	char * s_pattern2;
-	int i, j, k, l;
+	int i, j, k;
 	double start_p, by_p;
 	int n_p;
 	double p;
@@ -313,7 +297,6 @@ int main(int argc, char ** argv) {
 	unsigned int mmc;
 	FILE * output;
 	char filename[255], * outputdir;
-	int * repeticoes;
 
 	gsl_rng_env_setup();
 	T = gsl_rng_default;
@@ -330,7 +313,7 @@ int main(int argc, char ** argv) {
 	hops = atoi(argv[6]);
 	mmc = atoi(argv[7]);
 
-	// Parse pattern 1.
+	// Parse pattern.
 	pattern.v = atoi(strtok(s_pattern, ","));
  	pattern.k = atoi(strtok(NULL, ","));
 	pattern.onSlots = (int *) malloc(sizeof(unsigned int) * pattern.k);
@@ -341,7 +324,7 @@ int main(int argc, char ** argv) {
 		pattern.onSlots[i] = atoi(strtok(NULL, ","));
 	}
 
-	// Parse pattern 2.
+
 	pattern2.v = atoi(strtok(s_pattern2, ","));
 	pattern2.k = atoi(strtok(NULL, ","));
 	pattern2.onSlots = (int *) malloc(sizeof(unsigned int) * pattern2.k);
@@ -353,53 +336,30 @@ int main(int argc, char ** argv) {
 	}
 
 	p = start_p;
-	
-	repeticoes = (int *) malloc(mmc * sizeof(int));
-	for (j = 0; j < mmc; j++) {
-		repeticoes[j] = 0;
-	}
-	
-	/*for (i = 0; i < mmc; i++) {
-		printf("repeticoes %d: %d \n", i, repeticoes[i]);
-	}*/
-	
-	for (i = 0; i < reps; i++) {
-		offset = floor(gsl_ran_flat(r, 0.0, (double) mmc));
-		repeticoes[offset] ++;
-	}
-	
-	for (i = 0; i < mmc; i++) {
-		printf("repeticoes %d: %d \n", i, repeticoes[i]);
-	}
-
 
 	for (j = 0; j < n_p; j++) {
 		sprintf(filename, "%sbd_%.6f.txt", outputdir, p);
 		output = fopen(filename, "w");
 		for (i = 0; i < reps; i++) {
-		//for (i = 0; i < mmc; i++) {
-			//for (l = 0; l <= repeticoes[i]; l++){
-				start = floor(gsl_ran_flat(r, 0.0, (double) mmc)); 
-				t_total = 0;
-				for (k = 0; k < hops; k++) {
-					offset = floor(gsl_ran_flat(r, 0.0, (double) mmc)); //PARA OFFSET RANDOM
-					//offset = pp-> v -1; PARA OFFSET 1 NO BD E offset = v-1; NOS DEMAIS
-					pp = genPP(& pattern, & pattern2, mmc, offset);
-					t = simulateEncounter(pp, p, start, offset, mmc);
-					//pp = genPP(& pattern, & pattern2, mmc, i);
-					//t = simulateEncounter(pp, p, start, i, mmc);
-					t_total += t;
-					start = (start + offset + t + 1) % mmc;
-					fprintf(output, "%u\t", t);
-					free(pp->offsetZero.index);
-					free(pp->offsetZero.coincidences);
-					free(pp->others.index);
-					free(pp->others.coincidences);
-					free(pp);
-					}
-				fprintf(output, "%lu\n", t_total);
+			start = floor(gsl_ran_flat(r, 0.0, (double) mmc)); 
+			printf("start %d = ", start);
+			t_total = 0;
+			for (k = 0; k < hops; k++) {
+				offset = floor(gsl_ran_flat(r, 0.0, (double) mmc)); //PARA OFFSET RANDOM
+				//offset = pp-> v -1; PARA OFFSET 1 NO BD E offset = v-1; NOS DEMAIS
+				pp = genPP(& pattern, & pattern2, mmc, offset);
+				t = simulateEncounter(pp, p, start, offset, mmc);
+				t_total += t;
+				start = (start + offset + t + 1) % mmc;
+				fprintf(output, "%u\t", t);
+				free(pp->offsetZero.index);
+				free(pp->offsetZero.coincidences);
+				free(pp->others.index);
+				free(pp->others.coincidences);
+				free(pp);
 			}
-		//}
+			fprintf(output, "%lu\n", t_total);
+		}
 		p += by_p;
 		if (p > 1.0) p = 1.0;
 		fclose(output);

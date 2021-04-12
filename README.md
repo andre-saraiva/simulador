@@ -19,4 +19,5 @@ teste = prefixo do arquivo de saída
 Este comando faria 5 simulações (para p = 0,2; p = 0,4; p = 0,6; p = 0,8 e p = 1,0) com dois nós executando o block design 7,3,1 (que tem ciclos de três slots com os slots 0,1 e 3 ativos em cada ciclo). Para cada simulação, são executadas 5 repetições e os valores de NDT (em slots) são impressos nos arquivos "simulacoes_bd_0.200000.txt", "simulacoes_bd_0.400000.txt", "simulacoes_bd_0.600000.txt", ...
 
 Instalação da Biblioteca LIBGSL
+
 sudo apt-get install libgsl-dev

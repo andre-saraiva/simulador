@@ -116,6 +116,8 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 				}
 			}
 		pp->offsetZero.k = contZero;
+		
+		printf("Offset %d = %d\n", offset, contZero);	//imprime a quantidade de slots coincidentes para o offset 0
 	
 	/*	for (int p=0; p < contZero; p++){
 			printf("offsetZero.coincidences for offset 0 - %d= %d\n",p,pp->offsetZero.coincidences[p]);
@@ -176,6 +178,7 @@ t_pp_bd * genPP(t_bd * pattern, t_bd * pattern2, unsigned int mmc, unsigned int 
 				s++;
 				}
 			}
+			printf("Offset %d = %d\n", offset, contOther);	//imprime a quantidade de slots coincidentes para o offset 0
 			pp->others.k = contOther;
 	
 	/*	for (int p=0; p<contOther; p++){
@@ -368,9 +371,9 @@ int main(int argc, char ** argv) {
 		repeticoes[offset] ++;
 	}
 	
-	for (i = 0; i < mmc; i++) {
+	/*for (i = 0; i < mmc; i++) {
 		printf("repeticoes %d: %d \n", i, repeticoes[i]);
-	}
+	}*/
 
 
 	for (j = 0; j < n_p; j++) {
@@ -385,7 +388,7 @@ int main(int argc, char ** argv) {
 				for (l = 0; l < repeticoes[i]; l++){
 					start = floor(gsl_ran_flat(r, 0.0, (double) mmc)); 
 					t_total = 0;
-					printf("Offset: %d - Start: %d - Run: %d\n",i, start, l);
+					//printf("Offset: %d - Start: %d - Run: %d\n",i, start, l);
 					for (k = 0; k < hops; k++) {
 						//offset = floor(gsl_ran_flat(r, 0.0, (double) mmc)); //PARA OFFSET RANDOM
 						//offset = pp-> v -1; PARA OFFSET 1 NO BD E offset = v-1; NOS DEMAIS

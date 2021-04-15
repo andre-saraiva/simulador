@@ -380,6 +380,7 @@ int main(int argc, char ** argv) {
 		sprintf(filename, "%sbd_%.6f.txt", outputdir, p);
 		output = fopen(filename, "w");
 		//for (i = 0; i < reps; i++) {
+		//fprintf(output, " aqui %d", offset);
 		
 		for (i = 0; i < mmc; i++) {
 			pp = genPP(& pattern, & pattern2, mmc, i);
@@ -388,6 +389,7 @@ int main(int argc, char ** argv) {
 				for (l = 0; l < repeticoes[i]; l++){
 					start = floor(gsl_ran_flat(r, 0.0, (double) mmc)); 
 					t_total = 0;
+					fprintf(output, "%d\t", i);
 					//printf("Offset: %d - Start: %d - Run: %d\n",i, start, l);
 					for (k = 0; k < hops; k++) {
 						//offset = floor(gsl_ran_flat(r, 0.0, (double) mmc)); //PARA OFFSET RANDOM
@@ -397,7 +399,8 @@ int main(int argc, char ** argv) {
 						t = simulateEncounter(pp, p, start, i, mmc);
 						t_total += t;
 						start = (start + offset + t + 1) % mmc;
-						fprintf(output, "%u\t", t);
+						//fprintf(output, "%u\t", offset);
+						//fprintf(output, "%u\t", t);
 						}
 					fprintf(output, "%lu\n", t_total);
 					}	

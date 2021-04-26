@@ -1,4 +1,4 @@
-with open("DC_10.98_x_14.03bd_1.000000.txt", "r") as f:
+with open("DC_5.86_x_9.22bd_1.000000.txt", "r") as f:
     offset = None
     ndt = 0
     count_offset = 0

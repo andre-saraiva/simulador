@@ -1,4 +1,4 @@
-with open("ndt_5.86_x_9.22.txt", "r") as f:
+with open("ndt_6.22_x_12.35.txt", "r") as f:
     ndt = 0
     offset_1 = None # 1 , 153
     offset_2 = None # 137, 298 
@@ -11,7 +11,7 @@ with open("ndt_5.86_x_9.22.txt", "r") as f:
             offset_2 = int(line[0])
             ndt += float(line[1])
             count_offset +=1
-            const = 400  #valor do intervalo
+            const = 200  #valor do intervalo
             continue
 
         if int(line[0]) < const:
@@ -22,7 +22,7 @@ with open("ndt_5.86_x_9.22.txt", "r") as f:
             #print("{}-{}  ndt {:.2f} count {} media {:.2f}".format(offset_1, offset_2, ndt, count_offset, ndt/count_offset))
             print("{}-{} {:.2f}".format(offset_1, offset_2, ndt/count_offset))
             offset_1 = int(line[0])
-            const += 400 # valor do intervalo
+            const += 200 # valor do intervalo
             ndt = float(line[1])
             count_offset = 1
     #print("{}-{}  ndt {:.2f} count {} media {:.2f}".format(offset_1, offset_2, ndt, count_offset, ndt/count_offset))
